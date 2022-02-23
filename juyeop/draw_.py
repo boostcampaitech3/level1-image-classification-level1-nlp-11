@@ -8,7 +8,7 @@ class_list = [[['wear'], ['male'], ['un30']], [['wear'], ['male'], ['3060']], [[
 
 def draw_(df):
     plt.figure(figsize = (15, 30))
-    row = 8
+    row = len(wrong_df) // 3
     # 틀린 번호 찾기
     wrong_number = list()
     for df_path in list(df['path']):
