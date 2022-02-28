@@ -10,6 +10,8 @@ from PIL import Image
 from torch.utils.data import Dataset, Subset, random_split
 from torchvision import transforms
 from torchvision.transforms import *
+# from torchvision.transforms import Resize, ToTensor, Normalize, Compose, CenterCrop, ColorJitter
+
 
 IMG_EXTENSIONS = [
     ".jpg", ".JPG", ".jpeg", ".JPEG", ".png",
@@ -56,7 +58,7 @@ class MyAugmentation:
             Resize(resize, Image.BILINEAR),
             ColorJitter(0.1, 0.1, 0.1, 0.1),
             RandomRotation(30),
-            RandomHorizontalFlop(0.5),
+            RandomHorizontalFlip(0.5),
             ToTensor(),
             Normalize(mean=mean, std=std),
             AddGaussianNoise()

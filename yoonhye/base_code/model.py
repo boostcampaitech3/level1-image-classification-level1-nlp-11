@@ -99,3 +99,34 @@ class ResNet18_ft(nn.Module):
 
     def forward(self, x):
         return self.model(x)
+
+
+# DenseNet 
+class densenet(nn.Module):
+
+    def __init__(self, num_classes=18):
+        super().__init__()
+
+        from torchvision.models import densenet161
+        self.model = densenet161(pretrained=True)
+        self.model.classifier = nn.Linear(2208, num_classes)
+        # import torchvision.models as models
+        # self.model = models.efficientnet_b5(pretrained=True)
+
+        # import math
+        # nn.init.xavier_uniform_(self.model.fc.weight)
+        # self.stdv = 1. / math.sqrt(self.model.fc.weight.size(1))
+        # self.model.fc.bias.data.uniform_(-self.stdv, self.stdv)
+
+        # self.ct = 0
+        # for child in self.model.children():
+        #     self.ct += 1
+        #     if self.ct < 6:
+        #         for param in child.parameters():
+        #             param.requires_grad = False
+        print("=" * 100)
+        print(self.model)
+        print("=" * 100)  
+
+    def forward(self, x):
+        return self.model(x)
