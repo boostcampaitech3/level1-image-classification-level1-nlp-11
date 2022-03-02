@@ -42,8 +42,12 @@ class ResNet50_ft(nn.Module):
         super().__init__()
 
         self.model = models.resnet50(pretrained=True) # pre-trained model로 resnet50 지정
-        num_ftrs = self.model.fc.in_features  # resnet의 원래 출력layer수
-        self.model.fc = nn.Linear(num_ftrs, num_classes)
+        num_ftrs = self.model.fc.in_features  # resnet의 원래 출력layer수 (2048)
+        self.model.fc = nn.Sequential(
+            nn.Linear(num_ftrs, 512),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.7),
+            nn.Linear(512, num_classes))
 
         # nn.init.xavier_uniform_(self.model.fc.weight) #xavier_unifrom 적용
         # self.stdv = 1. / math.sqrt(self.model.fc.weight.size(1))

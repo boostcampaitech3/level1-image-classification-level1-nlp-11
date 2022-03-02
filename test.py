@@ -45,7 +45,7 @@ if __name__ == "__main__":
     parser.add_argument("--normalize_std",default=(0.229, 0.224, 0.225),type=float,help="Normalize std",)
     parser.add_argument("--image_dir", default="images", type=str, help="image dir path")
     # 실행할때마다 train된 모델이 저장된 위치를 입력해주어야함.
-    parser.add_argument('--model_path', default="/opt/ml/pstage1/output/model_save/model_2022-02-28_152715", type=str, help="saved model path")
+    parser.add_argument('--model_path', default="/opt/ml/pstage1/output/model_save/model_2022-03-02_032524", type=str, help="saved model path")
 
     args = parser.parse_args()
     seed_everything(42)

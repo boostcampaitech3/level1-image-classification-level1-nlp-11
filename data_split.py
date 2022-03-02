@@ -51,7 +51,7 @@ class Data_Split:
         for idx in range(len(df)):
             path = df["path"][idx]
             name = df["name"][idx]
-            shutil.copy(path, os.path.join(dir_name, name))
+            shutil. (path, os.path.join(dir_name, name))
 
 
 if __name__ == "__main__":
@@ -65,8 +65,7 @@ if __name__ == "__main__":
     np.random.seed(42)
     random.seed(42)
 
-    # 그대로 실행하면 Original Data를 Split해주고,
-    # python pro_hun/data_preprocessing/data_split.py --image_data "train_with_crop.csv" --image_dir "image_crop_all"로 실행하면 Crop된 Data를 Split해줌
+    
     train_label = pd.read_csv(os.path.join(args.train_path, args.image_data))
     run_train = Data_Split(os.path.join(args.train_path, args.image_dir))
     n_splits = args.n_splits

@@ -4,42 +4,67 @@ import numpy as np
 import pandas as pd
 
 class Make_Label:
-    def __init__(self, base_path: str, csv_file: pd.DataFrame, col: list):
+    def __init__(self, base_path: str, csv_file: pd.DataFrame, col: list, crop: bool):
         """
         원래의 train.csv 파일에 labeling을 새로 해준다.
         param:
             base_path: 주어진 train.csv의 파일경로
             csv_file: train.csv 파일
             col: 새로 만들 DataFrame의 column
+            crop: 라벨링할 이미지가 face crop을 적용한 이미지인지 아닌지
         """
         self.path = base_path
         self.img_path = os.path.join(base_path, "images")
         self.csv_file = csv_file
         self.df = pd.DataFrame(columns = col)
+        self.crop = crop
 
     def labeling(self):
         cnt = 0
-        # 이미지 폴더 path
-        for idx in range(train_df.shape[0]):
-            img_path = os.path.join(self.img_path, train_df.iloc[idx]["path"])
-            file_list = os.listdir(img_path)
+        if self.crop:
+            # 이미지 폴더 path
+            for idx in range(train_df.shape[0]):
+                img_path = os.path.join(self.img_path, train_df.iloc[idx]["path"])
+                file_list = os.listdir(img_path)
 
-            for file in file_list:
-                if file.rstrip().startswith("._"):  # '._'로 시작하는 파일 거름
-                    continue
+                for file in file_list:
+                    if file.rstrip().startswith("._"):  # '._'로 시작하는 파일 거름
+                        continue
 
-                file_path = os.path.join(img_path, file)
-                # train.csv 파일에서 gender, age를 갖고옴
-                self.df.loc[cnt] = train_df.loc[idx][["gender", "age"]]
-                self.df.loc[cnt]["path"] = file_path
-                self.df.loc[cnt]["name"] = file_path.split("/")[-2] + "_" + file
-                self.check_label(self.df, cnt)
-                cnt += 1
-        print('labeling done!')
+                    file_path = os.path.join(img_path, file)
+                    # train.csv 파일에서 gender, age를 갖고옴
+                    self.df.loc[cnt] = train_df.loc[idx][["gender", "age"]]
+                    self.df.loc[cnt]["path"] = file_path
+                    self.df.loc[cnt]["name"] = file_path.split("/")[-2] + "_" + file
+                    self.check_label(self.df, cnt)
+                    cnt += 1
+            print('labeling done!')
 
-        # 새로 만든 DataFrame 저장
-        labeling_data_path = "/opt/ml/input/data/train/train_with_label.csv"
-        self.df.to_csv(labeling_data_path, index=False)
+            # 새로 만든 DataFrame 저장
+            labeling_data_path = "/opt/ml/pstage1/input/data/train/crop_train_with_label.csv"
+            self.df.to_csv(labeling_data_path, index=False)
+        else:
+            # 이미지 폴더 path
+            for idx in range(train_df.shape[0]):
+                img_path = os.path.join(self.img_path, train_df.iloc[idx]["path"])
+                file_list = os.listdir(img_path)
+
+                for file in file_list:
+                    if file.rstrip().startswith("._"):  # '._'로 시작하는 파일 거름
+                        continue
+
+                    file_path = os.path.join(img_path, file)
+                    # train.csv 파일에서 gender, age를 갖고옴
+                    self.df.loc[cnt] = train_df.loc[idx][["gender", "age"]]
+                    self.df.loc[cnt]["path"] = file_path
+                    self.df.loc[cnt]["name"] = file_path.split("/")[-2] + "_" + file
+                    self.check_label(self.df, cnt)
+                    cnt += 1
+            print('labeling done!')
+
+            # 새로 만든 DataFrame 저장
+            labeling_data_path = "/opt/ml/pstage1/input/data/train/train_with_label.csv"
+            self.df.to_csv(labeling_data_path, index=False)
 
     # 라벨링표를 참고하여 라벨링
     def check_label(self, df, idx_df):
@@ -66,13 +91,18 @@ class Make_Label:
 
 
 if __name__ == "__main__":
-    # train 데이터 경로
-    train_path = "/opt/ml/input/data/train"
+    # train data 경로
+    train_path = "/opt/ml/pstage1/input/data/train"
     train_df = pd.read_csv(os.path.join(train_path, "train.csv"))
 
     # labeling 시행
-    make_label = Make_Label(train_path, train_df, ["gender", "age", "path", "name", "label"])
+    make_label = Make_Label(train_path, train_df, ["gender", "age", "path", "name", "label"], False)
     make_label.labeling()
 
-    
-    df = pd.read_csv('/opt/ml/input/train/train_with_label.csv')
+    # face crop train data 경로
+    crop_train_path = "/opt/ml/pstage1/input/data/train"
+    crop_train_df = pd.read_csv(os.path.join(crop_train_path, "train.csv"))
+
+    # labeling 시행
+    crop_make_label = Make_Label(crop_train_path, crop_train_df, ["gender", "age", "path", "name", "label"], True)
+    crop_make_label.labeling()
