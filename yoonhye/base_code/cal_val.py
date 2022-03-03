@@ -48,22 +48,30 @@ def inference(data_dir, model_dir, output_dir, args):
     seed_everything(42)
     # -- dataset
     dataset_module = getattr(import_module("dataset"), args.dataset)  # default: BaseAugmentation
-    dataset = dataset_module(
-        data_dir=data_dir,
-    )
-    num_classes = dataset.num_classes  # 18
+    if args.dataset != 'CustomDataset':
+        dataset = dataset_module(
+            data_dir=data_dir,
+        )
+    num_classes = 18 # 18
 
     # -- augmentation
     transform_module = getattr(import_module("dataset"), args.augmentation)  # default: BaseAugmentation
     transform = transform_module(
-        resize=args.resize,
-        mean=dataset.mean,
-        std=dataset.std,
+        # resize=args.resize,
+        # mean=dataset.mean,
+        # std=dataset.std,
     )
-    dataset.set_transform(transform)
+    # dataset.set_transform(transform)
 
     # -- data_loader
-    train_set, val_set = dataset.split_dataset()
+    # train_set, val_set = dataset.split_dataset()
+    df = pd.read_csv('/opt/ml/train_df.csv')
+    from sklearn.model_selection import train_test_split
+    train, valid = train_test_split(df, test_size=0.2,
+                                shuffle=True, stratify=df['label'],
+                                random_state=42)
+
+    val_set = dataset_module(valid, transform)
 
     val_loader = DataLoader(
         val_set,
