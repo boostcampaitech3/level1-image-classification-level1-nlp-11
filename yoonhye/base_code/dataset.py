@@ -56,9 +56,9 @@ class MyAugmentation:
         self.transform = transforms.Compose([
             CenterCrop((320, 256)),
             Resize(resize, Image.BILINEAR),
-            ColorJitter(0.1, 0.1, 0.1, 0.1),
-            RandomRotation(30),
-            RandomHorizontalFlip(0.5),
+            # ColorJitter(0.1, 0.1, 0.1, 0.1),
+            # RandomRotation(30),
+            # RandomHorizontalFlip(0.5),
             ToTensor(),
             Normalize(mean=mean, std=std),
             AddGaussianNoise()
